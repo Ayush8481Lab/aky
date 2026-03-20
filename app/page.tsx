@@ -1,9 +1,22 @@
-import { Redis } from '@upstash/redis';
+import { list } from '@vercel/blob';
 
-const redis = Redis.fromEnv();
+// Forces Vercel to show fresh updates instantly
+export const revalidate = 0; 
+
+async function getLinks() {
+  try {
+    const { blobs } = await list();
+    const file = blobs.find(b => b.pathname === 'links.json');
+    if (!file) return[];
+    const res = await fetch(file.url, { cache: 'no-store' });
+    return await res.json();
+  } catch (error) {
+    return[];
+  }
+}
 
 export default async function Home() {
-  const links: any = (await redis.get('links')) || [];
+  const links = await getLinks();
 
   return (
     <main className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900 via-gray-900 to-black p-6 pt-20 flex flex-col items-center font-sans text-white">
