@@ -1,0 +1,6 @@
+"dependencies": {
+  "react": "^18",
+  "react-dom": "^18",
+  "next": "14",
+  "@vercel/kv": "^3.0.0"
+}
